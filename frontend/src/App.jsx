@@ -59,6 +59,45 @@ function App() {
     });
   }
 
+  function renderProductsByCategory() {
+    const productsByCategory = {};
+
+    products.forEach((prod) => {
+      const { category, name, price } = prod;
+      if (!productsByCategory[category]) {
+        productsByCategory[category] = [];
+      }
+      productsByCategory[category].push({ name, price });
+    });
+
+    return (
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Preço</th>
+            {Object.keys(productsByCategory).map((category) => (
+              <th key={category}>{`${category} `}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {products.map((prod) => (
+            <tr key={prod.name}>
+              <td>{prod.name}</td>
+              <td>{prod.price}</td>
+              {Object.keys(productsByCategory).map((category) => (
+                <td key={`${category}-${prod.name}`}>
+                  {productsByCategory[category].some((p) => p.name === prod.name) ? 'X' : '-'}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  }
+
 
   return (
     <div>
@@ -97,7 +136,11 @@ function App() {
       <input type="" placeholder='Categoria' onChange={event => setCategory(event.target.value)}/>
       <input type="Number" placeholder='Preço' onChange={event => setPrice(event.target.value)}/>
       <button onClick={newProduct}>Adicionar produto</button>
-      
+      <div>
+        <h2>Produtos por categoria</h2>
+        {renderProductsByCategory()}
+      </div>
+
     </div>
   )
 }
